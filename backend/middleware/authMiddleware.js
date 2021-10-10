@@ -12,7 +12,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
             req.user = await User.findById(decoded.id).select('-password')
 
-            next();
+            next()
 
         } catch (error) {
             console.log(error)
@@ -27,4 +27,14 @@ const protect = asyncHandler(async (req, res, next) => {
 
 })
 
-export { protect }
+const admin = (req, res, next) => {
+    if (req.user && req.user.isAdmin) {
+        next()
+    } else {
+        res.status(401)
+        throw new Error('Not Authorized, not an ADMIN')
+    }
+}
+
+
+export { protect, admin };
