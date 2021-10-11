@@ -2,9 +2,11 @@ import express from 'express';
 import connectDB from './config/db.js';
 import dotenv from 'dotenv';
 import colors from 'colors';
+import path from 'path'
 import productRouter from './routes/productRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 const app = express();
 
 dotenv.config();
@@ -19,8 +21,12 @@ app.get('/', (req, res) => {
 app.use('/api/products', productRouter)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/upload', uploadRoutes)
 
 app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
+const __dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 
 const PORT = process.env.PORT || 5000
