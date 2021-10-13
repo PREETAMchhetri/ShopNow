@@ -2,15 +2,31 @@ import {
     ORDER_CREATE_REQUEST,
     ORDER_CREATE_SUCCESS,
     ORDER_CREATE_FAIL,
+
     ORDER_DETAILS_REQUEST,
     ORDER_DETAILS_SUCCESS,
     ORDER_DETAILS_FAIL,
+
     ORDER_PAY_REQUEST,
     ORDER_PAY_SUCCESS,
     ORDER_PAY_FAIL,
+
     ORDER_MY_LIST_REQUEST,
     ORDER_MY_LIST_SUCCESS,
     ORDER_MY_LIST_FAIL,
+
+    LIST_ORDERS_REQUEST,
+    LIST_ORDERS_SUCCESS,
+    LIST_ORDERS_FAIL,
+
+    ORDER_DELETE_REQUEST,
+    ORDER_DELETE_SUCCESS,
+    ORDER_DELETE_FAIL,
+
+    ORDER_DELIVER_REQUEST,
+    ORDER_DELIVER_SUCCESS,
+    ORDER_DELIVER_FAIL,
+
 
 } from '../constants/orderConstatns'
 
@@ -112,6 +128,36 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
         })
     }
 }
+export const deliverOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_DELIVER_REQUEST,
+        })
+        const { userLogin: { userInfo } } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.put(`/api/orders/${order._id}/deliver`, {}, config)
+
+        dispatch({
+            type: ORDER_DELIVER_SUCCESS,
+            payload: data,
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_DELIVER_FAIL,
+            payload:
+                error.response && error.response.data.message ?
+                    error.response.data.message :
+                    error.message,
+        })
+    }
+}
 
 
 export const listMyOrders = () => async (dispatch, getState) => {
@@ -137,6 +183,68 @@ export const listMyOrders = () => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: ORDER_MY_LIST_FAIL,
+            payload:
+                error.response && error.response.data.message ?
+                    error.response.data.message :
+                    error.message,
+        })
+    }
+}
+
+
+export const listOrders = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: LIST_ORDERS_REQUEST,
+        })
+        const { userLogin: { userInfo } } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        const { data } = await axios.get(`/api/orders`, config)
+
+        dispatch({
+            type: LIST_ORDERS_SUCCESS,
+            payload: data,
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: LIST_ORDERS_FAIL,
+            payload:
+                error.response && error.response.data.message ?
+                    error.response.data.message :
+                    error.message,
+        })
+    }
+}
+
+export const deleteOrder = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_DELETE_REQUEST,
+        })
+        const { userLogin: { userInfo } } = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+        await axios.delete(`/api/orders/${id}`, config)
+
+        dispatch({
+            type: ORDER_DELETE_SUCCESS,
+        })
+
+
+    } catch (error) {
+        dispatch({
+            type: ORDER_DELETE_FAIL,
             payload:
                 error.response && error.response.data.message ?
                     error.response.data.message :

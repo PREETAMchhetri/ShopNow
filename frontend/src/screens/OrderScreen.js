@@ -2,16 +2,16 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 import { PayPalButton } from 'react-paypal-button-v2'
-import { getOrderDetails, payOrder } from '../actions/orderActions'
-import { ORDER_PAY_RESET } from '../constants/orderConstatns'
+import { getOrderDetails, payOrder, deliverOrder } from '../actions/orderActions'
+import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstatns'
 
 
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
 
     const orderId = match.params.id
 
@@ -25,6 +25,13 @@ const OrderScreen = ({ match }) => {
     const orderPay = useSelector(state => state.orderPay)
     const { loading: loadingPay, success: successPay } = orderPay
 
+    const orderDeliver = useSelector(state => state.orderDeliver)
+    const { loading: loadingDeliver, success: successDeliver } = orderDeliver
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+
     if (!loading) {
         //Calculate Prices
         const addDecimals = (num) => {
@@ -35,6 +42,7 @@ const OrderScreen = ({ match }) => {
 
 
     useEffect(() => {
+        if (!userInfo) { history.push('/login') }
         const addPayPalScript = async () => {
             const { data: clientId } = await axios.get('/api/config/paypal')
 
@@ -49,8 +57,9 @@ const OrderScreen = ({ match }) => {
             document.body.appendChild(script)
         }
 
-        if (!order || successPay) {
+        if (!order || successPay || successDeliver) {
             dispatch({ type: ORDER_PAY_RESET })
+            dispatch({ type: ORDER_DELIVER_RESET })
             dispatch(getOrderDetails(orderId))
 
         } else if (!order.isPaid) {
@@ -60,13 +69,16 @@ const OrderScreen = ({ match }) => {
                 setSdkReady(true)
             }
         }
-    }, [dispatch, orderId, successPay, order])
+    }, [dispatch, orderId, successPay, order, successDeliver, history, userInfo])
 
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult)
         dispatch(payOrder(orderId, paymentResult))
     }
 
+    const deliverHandler = () => {
+        dispatch(deliverOrder(order))
+    }
     return (loading ? <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} /> : error ? <span>{error}</span> : <>
         <h1>Order {orderId}</h1>
         <Row>
@@ -86,7 +98,7 @@ const OrderScreen = ({ match }) => {
                             {order.shippingAddress.postalCode},
                             {order.shippingAddress.country}
                         </p>
-                        {order.isdelivered ? <span>Delivered on {order.deliveredAt}</span> : <span>Not Delivered</span>}
+                        {order.isDelivered ? (<span>Delivered On: {order.deliveredAt}</span>) : <span>Not Delivered</span>}
 
                     </ListGroup.Item>
                     <ListGroup.Item>
@@ -165,6 +177,14 @@ const OrderScreen = ({ match }) => {
                                 {!sdkReady ? <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} /> : (
                                     <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
                                 )}
+                            </ListGroup.Item>
+                        )}
+                        {loadingDeliver && <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />}
+                        {userInfo && userInfo.isAdmin && order.isPaid && !order.isdelivered && (
+                            <ListGroup.Item>
+                                <Button type='button' onClick={deliverHandler}>
+                                    Mark As Deliver
+                                </Button>
                             </ListGroup.Item>
                         )}
 

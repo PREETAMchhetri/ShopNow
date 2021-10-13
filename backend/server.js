@@ -7,7 +7,13 @@ import productRouter from './routes/productRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import morgan from 'morgan'
 const app = express();
+
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan('dev'))
+}
+
 
 dotenv.config();
 
@@ -27,6 +33,7 @@ app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_I
 
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+
 
 
 const PORT = process.env.PORT || 5000

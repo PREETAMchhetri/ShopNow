@@ -32,10 +32,11 @@ const ProductEditScreen = ({ match, history }) => {
     const productUpdate = useSelector(state => state.productUpdate)
     const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate
 
-
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
 
     useEffect(() => {
-
+        if (!userInfo) { history.push('/login') }
         if (successUpdate) {
             dispatch({ type: PRODUCT_UPDATE_RESET })
             history.push('/admin/productlist')
@@ -55,7 +56,7 @@ const ProductEditScreen = ({ match, history }) => {
         }
 
 
-    }, [dispatch, product, history, productId, successUpdate])
+    }, [dispatch, product, history, productId, successUpdate, userInfo])
 
     const uploadFileHandler = async (e) => {
         const file = e.target.files[0]

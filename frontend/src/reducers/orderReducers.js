@@ -15,7 +15,22 @@ import {
     ORDER_MY_LIST_REQUEST,
     ORDER_MY_LIST_FAIL,
     ORDER_MY_LIST_SUCCESS,
-    ORDER_MY_LIST_RESET
+    ORDER_MY_LIST_RESET,
+
+    LIST_ORDERS_REQUEST,
+    LIST_ORDERS_SUCCESS,
+    LIST_ORDERS_FAIL,
+    LIST_ORDERS_RESET,
+
+    ORDER_DELETE_REQUEST,
+    ORDER_DELETE_SUCCESS,
+    ORDER_DELETE_FAIL,
+
+    ORDER_DELIVER_REQUEST,
+    ORDER_DELIVER_SUCCESS,
+    ORDER_DELIVER_FAIL,
+    ORDER_DELIVER_RESET,
+
 } from '../constants/orderConstatns'
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -107,3 +122,74 @@ export const orderListMyReducer = (state = { orders: [] }, action) => {
     }
 }
 
+
+export const orderListReducer = (state = { orders: [] }, action) => {
+    switch (action.type) {
+
+        case LIST_ORDERS_REQUEST:
+            return { loading: true }
+
+        case LIST_ORDERS_SUCCESS:
+            return {
+                loading: false,
+                orders: action.payload
+            }
+        case LIST_ORDERS_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        case LIST_ORDERS_RESET:
+            return {
+                loading: { orders: [] }
+            }
+
+        default:
+            return state
+    }
+}
+
+export const orderDeleteReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        case ORDER_DELETE_REQUEST:
+            return { loading: true }
+
+        case ORDER_DELETE_SUCCESS:
+            return {
+                loading: false,
+                success: true
+            }
+        case ORDER_DELETE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        default:
+            return state
+    }
+}
+
+
+
+export const orderDeliverReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_DELIVER_REQUEST:
+            return { loading: true }
+
+        case ORDER_DELIVER_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+            }
+        case ORDER_DELIVER_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        case ORDER_DELIVER_RESET:
+            return {}
+        default:
+            return state
+    }
+}

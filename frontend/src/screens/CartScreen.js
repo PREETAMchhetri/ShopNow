@@ -17,16 +17,21 @@ const Cart = ({ match, location, history }) => {
     const dispatch = useDispatch()
 
     const cart = useSelector(state => state.cart)
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
 
     const { cartItems } = cart
 
     useEffect(() => {
+        if (!userInfo) {
+            history.push('/login')
+        }
         if (productId) {
             dispatch(cartAction(productId, qty))
-
         }
 
-    }, [dispatch, productId, qty])
+
+    }, [dispatch, productId, qty, history, userInfo])
 
     const removeFromCartHandler = (id) => {
         if (window.confirm('Are you sure you want to remove from your cart?'))
