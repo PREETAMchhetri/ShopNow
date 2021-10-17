@@ -1,10 +1,12 @@
 import React from 'react'
+import { Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navbar, NavDropdown } from 'react-bootstrap'
 import { Container } from 'react-bootstrap'
 import { Nav } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap' //Faster link than href
 import { logout } from '../actions/userActions'
+import SearchBox from './SearchBox'
 
 
 
@@ -25,8 +27,11 @@ const Header = () => {
                     <LinkContainer to='/'>
                         <Navbar.Brand>ShopNow</Navbar.Brand>
                     </LinkContainer>
+
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
+                        {/* GOT TO DO THIS BECAUSE OF SEARCHBOX HISTORY */}
+                        <Route render={({ history }) => <SearchBox history={history} />} />
                         <Nav className='mx-auto'>
                             <LinkContainer to='/cart'>
                                 <Nav.Link><i className='fas fa-shopping-cart'></i>Cart</Nav.Link>

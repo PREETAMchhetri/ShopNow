@@ -19,10 +19,6 @@ import ProductListScreen from "./screens/ProductListScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 
-
-
-
-
 const App = () => {
   return (
     <Router>
@@ -33,7 +29,6 @@ const App = () => {
             <Route path='/shipping' component={ShippingScreen} exact />
             <Route path='/payment' component={PaymentScreen} />
             <Route path='/placeorder' component={PlaceOrderScreen} />
-            <Route path='/' component={Home} exact />
             <Route path='/product/:id' component={ProductScreen} />
             <Route path='/cart/:id?' component={CartScreen} />
             <Route path='/login' component={LoginScreen} />
@@ -42,9 +37,14 @@ const App = () => {
             <Route path='/order/:id' component={OrderScreen} />
             <Route path='/admin/userlist' component={UserListScreen} />
             <Route path='/admin/user/:id/edit' component={UserEditScreen} />
-            <Route path='/admin/productlist' component={ProductListScreen} />
+            <Route path='/admin/productlist' component={ProductListScreen} exact />
+            <Route path='/admin/productlist/:pageNumber' component={ProductListScreen} exact />
             <Route path='/admin/product/:id/edit' component={ProductEditScreen} />
             <Route path='/admin/orderlist' component={OrderListScreen} />
+            <Route path='/search/:keyword' component={Home} exact />
+            <Route path='/page/:pageNumber' component={Home} exact />
+            <Route path='/search/:keyword/page/:pageNumber' component={Home} exact />
+            <Route path='/' component={Home} exact />
 
 
           </Container>
