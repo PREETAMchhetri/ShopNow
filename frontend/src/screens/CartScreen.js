@@ -114,6 +114,7 @@ const Cart = ({ match, location, history }) => {
                     )}
 
             </Col>
+
             <Col md={4}>
                 <Card>
                     <ListGroup>

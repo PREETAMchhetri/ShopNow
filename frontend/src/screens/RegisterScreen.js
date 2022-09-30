@@ -25,6 +25,7 @@ const RegisterScreen = ({ location, history }) => {
             history.push(redirect)
         }
     }, [history, userInfo, redirect])
+
     const submitHandler = (e) => {
         e.preventDefault()
         if (password !== confirmPassword) {
@@ -40,7 +41,7 @@ const RegisterScreen = ({ location, history }) => {
             {message && <span className='m-3' style={{ backgroundColor: 'rgb(245, 151, 151) ', fontWeight: 'bold', color: 'maroon' }}>{message}</span>}
             {error && <span className='m-3' style={{ backgroundColor: 'rgb(245, 151, 151) ', fontWeight: 'bold', color: 'maroon' }}>{error}</span>}
             {loading && <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />}
-            <Form onSubmit={submitHandler}>
+            <Form onSubmit={submitHandler} className='my-3 p-3'>
                 <Form.Group controlId='name'>
                     <Form.Label>Name</Form.Label>
                     <Form.Control
